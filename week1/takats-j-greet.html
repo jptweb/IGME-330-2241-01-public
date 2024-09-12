@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Greeter</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+      *{font-size:1.5em;}
+
+      /* body{
+        background-color:red;
+        
+      } */
+
+      button{
+        font-size:14pt;
+        width:150px;
+        height:50px;
+      }
+
+      @media screen and (min-width:1024px){
+        body{
+            background:red;
+            padding:100px;
+        }
+      }
+
+ 
+    </style>
+    <script>
+    'use strict'
+
+    function init(){
+        // 1 - get a reference to the button
+        let button = document.querySelector("#btn-greet");
+        console.log(button);
+        // 2 - add a click event to button that calls a `sayHello` function
+        button.addEventListener('click', function(){ 
+            sayHello();
+        });
+        // 3 - create a `sayHello()` function
+        function sayHello(){
+            console.log("inside Hello function");
+            // 3A - get name of person from the <input>
+            let firstname = document.querySelector("#input-firstname").value.trim();
+            
+            if(firstname == ""){
+                firstname = "peter";
+            }
+
+            firstname = firstname
+            // console.log(firstname.length);
+
+           
+            // 3B - get a reference to the #output <p>
+            let output = document.querySelector("#output");
+
+            //output.innerHTML = "Hello, " + firstname;
+
+            output.innerHTML = `Hello, ${firstname} You are here`; 
+
+            // 3C - update HTML of #output <p>
+
+        }
+
+        document.querySelector("p").style.backgroundColor = "yellow";
+        document.querySelector("p").style.color = "red";
+         
+
+
+    }
+        
+    window.onload = init;
+
+    //Another way to do it
+    // document.addEventListener('DOMContentLoaded', function(){ 
+    //     init();
+    // });
+    </script>
+  </head>
+<body>
+  <button id="btn-greet">Click Me!</button>
+  <input id="input-firstname" placeholder="Type in your name">
+  <p id="output">???</p>
+</body>
+</html>
