@@ -20,34 +20,26 @@
 	
 
 <script>
-  document.querySelector("#my-button").onclick = loadXmlXHR;
+  document.querySelector("#my-button").onclick = loadJsonXHR;
 
-  function loadXmlXHR(){
+  function loadJsonXHR(){
     const url = "data/pet-names.json";
     const xhr = new XMLHttpRequest();
     xhr.onload = (e) => {
       console.log(`In onload - HTTP Status Code = ${e.target.status}`);
       const json = e.target.responseText;
-      obj = JSON.parse(json); 
-      //console.log(obj);
-      // guard code
-
-      dogs = obj.dognames;
-
-      for(var i = 0; i < dogs.length; i ++){
-        console.log(dogs[i]);
+      let obj;
+      try{
+        obj = JSON.parse(json); 
+        // guard code
+      }catch{
+        document.querySelector("#output").innerHTML = "Json has issues";
       }
-
-
-      if(!xml){
-        document.querySelector("#output").innerHTML = "xml is null";
-        return;
-      }
-      const dogNames = xml.querySelector("namelist[cid='dognames']").textContent.split(",");
-      const catNames = xml.querySelector("namelist[cid='catnames']").textContent.split(",");
+      console.log(obj);
+      catNames = obj.catnames;
+      dogNames = obj.dognames;
       const dogHtml = `<ol>${dogNames.map(w => `<li>${w}</li>`).join("")}</ol>`;
       const catHtml = `<ol>${catNames.map(w => `<li>${w}</li>`).join("")}</ol>`;
-      
       const html = `
         <h3>Dog Names</h3>
         ${dogHtml}
@@ -55,6 +47,25 @@
         ${catHtml}
       `;
       document.querySelector("#output").innerHTML = html;
+
+
+
+      // if(!xml){
+      //   document.querySelector("#output").innerHTML = "xml is null";
+      //   return;
+      // }
+      // const dogNames = xml.querySelector("namelist[cid='dognames']").textContent.split(",");
+      // const catNames = xml.querySelector("namelist[cid='catnames']").textContent.split(",");
+      // const dogHtml = `<ol>${dogNames.map(w => `<li>${w}</li>`).join("")}</ol>`;
+      // const catHtml = `<ol>${catNames.map(w => `<li>${w}</li>`).join("")}</ol>`;
+      
+      // const html = `
+      //   <h3>Dog Names</h3>
+      //   ${dogHtml}
+      //   <h3>Cat Names</h3>
+      //   ${catHtml}
+      // `;
+      // document.querySelector("#output").innerHTML = html;
     };
     xhr.onerror = e => console.log(`In onerror - HTTP Status Code = ${e.target.status}`);
     xhr.open("GET", url);
