@@ -1,98 +1,173 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-	<meta charset="utf-8" />
-	<title>First Canvas</title>
-	<style>
-	canvas{
-		border:1px solid gray;
-	}
-	</style>
-	<script>
-		// #0 - in this class we will always use ECMAScript 5's "strict" mode
-		// See what 'use strict' does here:
-		// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions_and_function_scope/Strict_mode
-		"use strict";
-		
-		// #1 call the `init` function after the pages loads
-		window.onload = init;
-	
-		function init(){
-			console.log("page loaded!");
-			// #2 Now that the page has loaded, start drawing!
-			
-			// A - `canvas` variable points at <canvas> tag
-			let canvas = document.querySelector("canvas");
-			
-			// B - the `ctx` variable points at a "2D drawing context"
-			let ctx = canvas.getContext("2d");
-			
-			// C - all fill operations are now in red
-			ctx.fillStyle = "red"; 
-            // ctx.fillStyle = "#FF00FF";
-            // ctx.fillStyle = "#00F";
-            // ctx.fillStyle = "rgb(0,200,0)";
-            // ctx.fillStyle = "rgba(0,200,0,.3)";
-			
-			// // D - fill a rectangle with the current fill color
+  <head>
+    <meta charset="utf-8" />
+    <title>First Canvas</title>
+    <style>
+      canvas {
+        border: 1px solid gray;
+      }
+      body {
+        font-family: sans-serif;
+      }
 
-            // //(x, y,) where 20 over, 20 down.. then the 600 wide by 440
-			ctx.fillRect(20,20,600,440); 
-            ctx.fillStyle = "yellow";
+      button {
+        font-size: 1.2em;
+      }
 
-            // ctx.fillStyle = "rgba(0,200,0,.3)";
-            ctx.fillRect(120,120,400,300);
+      section {
+        margin: 0.5em 0 0.5em 0;
+      }
+    </style>
+    <script>
+      // #0 - in this class we will always use ECMAScript 5's "strict" mode
+      // See what 'use strict' does here:
+      // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions_and_function_scope/Strict_mode
+      "use strict";
 
-            ctx.lineWidth = 10;
-            ctx.strokeStyle = "orange";
-            ctx.strokeRect(120,120,400,300)
+      let ctx;
+      let paused = false;
 
-            //Paths part!
-            //rect()
-            ctx.fillStyle = "lightskyblue";
-            ctx.strokeStyle = "purple"
-            ctx.beginPath(); //its a method must be invoked
-            //now define rectangle
-            ctx.rect(200,100,80,80);
-            //try it now, then point out we need to close path!!
-            ctx.closePath();
-            ctx.stroke();
-            //now we have to fill it
-            ctx.fill();
-            //POINT OUT THAT ORDERING MATTERS WITH FILL AND STROKE
+      // #1 call the `init` function after the pages loads
+      window.onload = init;
 
-            //arc()   thats a circle
-            ctx.fillStyle = "green";
-            ctx.strokeStyle = "pink"
-            ctx.beginPath(); //its a method must be invoked
-            //now start circle / arc
-            //X and Y the coordinate is set at the center of it
-            //Degrees Vs radiants?? gotta get used to radiants
-            //ctx.arc(320,240,50,0, Math.PI * 2, false);
-            ctx.arc(320,240,50,0, Math.PI, false);
-            ctx.fill();
-            ctx.closePath();
-            ctx.stroke();
+      // handy helper functions!
+      function getRandomColor() {
+        function getByte() {
+          return 55 + Math.round(Math.random() * 200);
+        }
+        return "rgba(" + getByte() + "," + getByte() + "," + getByte() + ",.8)";
+      }
 
-            //line   thats a circle
-            ctx.strokeStyle = "brown"
-            ctx.beginPath(); //its a method must be invoked
-            //now start circle / arc
-            ctx.moveTo(20,20); //starting point
-            ctx.lineTo(620,460);
-            ctx.closePath();
-            ctx.stroke();
+      function getRandomInt(min, max) {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+      }
+
+        function canvasClicked(e){
+        let rect = e.target.getBoundingClientRect();
+        let mouseX = e.clientX - rect.x;
+        let mouseY = e.clientY - rect.y;
+        console.log(mouseX,mouseY);
+        }
+
+      const drawRandomRect = () => {
+        ctx.save();
+
+        ctx.beginPath();
+        ctx.rect(
+          getRandomInt(0, 640),
+          getRandomInt(0, 480),
+          getRandomInt(10, 30),
+          getRandomInt(10, 30)
+        );
+        ctx.closePath();
+        ctx.fillStyle = getRandomColor();
+        ctx.fill();
+
+        ctx.restore();
+      };
+
+      const update = () => {
+        if(!paused){
+            requestAnimationFrame(update);
+            drawRandomRect();
+        }
+      };
+
+      function init() {
+        console.log("page loaded!");
+        // #2 Now that the page has loaded, start drawing!
+
+        // A - `canvas` variable points at <canvas> tag
+        let canvas = document.querySelector("canvas");
+
+        // B - the `ctx` variable points at a "2D drawing context"
+        ctx = canvas.getContext("2d");
+
+        // C - all fill operations are now in red
+        ctx.fillStyle = "red";
+        // ctx.fillStyle = "#FF00FF";
+        // ctx.fillStyle = "#00F";
+        // ctx.fillStyle = "rgb(0,200,0)";
+        // ctx.fillStyle = "rgba(0,200,0,.3)";
+
+        // // D - fill a rectangle with the current fill color
+
+        // //(x, y,) where 20 over, 20 down.. then the 600 wide by 440
+        ctx.fillRect(20, 20, 600, 440);
+        ctx.fillStyle = "yellow";
+
+        // ctx.fillStyle = "rgba(0,200,0,.3)";
+        ctx.fillRect(120, 120, 400, 300);
+
+        ctx.lineWidth = 10;
+        ctx.strokeStyle = "orange";
+        ctx.strokeRect(120, 120, 400, 300);
+
+        //Paths part!
+        //rect()
+        ctx.fillStyle = "lightskyblue";
+        ctx.strokeStyle = "purple";
+        ctx.beginPath(); //its a method must be invoked
+        //now define rectangle
+        ctx.rect(200, 100, 80, 80);
+        //try it now, then point out we need to close path!!
+        ctx.closePath();
+        ctx.stroke();
+        //now we have to fill it
+        ctx.fill();
+        //POINT OUT THAT ORDERING MATTERS WITH FILL AND STROKE
+
+        //arc()   thats a circle
+        ctx.fillStyle = "green";
+        ctx.strokeStyle = "pink";
+        ctx.beginPath(); //its a method must be invoked
+        //now start circle / arc
+        //X and Y the coordinate is set at the center of it
+        //Degrees Vs radiants?? gotta get used to radiants
+        //ctx.arc(320,240,50,0, Math.PI * 2, false);
+        ctx.arc(320, 240, 50, 0, Math.PI, false);
+        ctx.fill();
+        ctx.closePath();
+        ctx.stroke();
+
+        //line   thats a circle
+        ctx.strokeStyle = "brown";
+        ctx.beginPath(); //its a method must be invoked
+        //now start circle / arc
+        ctx.moveTo(20, 20); //starting point
+        ctx.lineTo(620, 460);
+        ctx.closePath();
+        ctx.stroke();
 
 
+        document.querySelector("#btnPlay").onclick = () => {
+            paused = false;
+            update();
+        }
 
-
+        document.querySelector("#btnPause").onclick = () => {
+            paused = true;
+            
+        }
         
-		}
-	</script>
-</head>
-<body>
-	<canvas width="640" height="480">
-		Get a real browser!
-	</canvas>
-</body>
+      }
+    </script>
+  </head>
+  <body>
+    <canvas width="640" height="480"> Get a real browser! </canvas>
+    <section>
+        <button id="btnPlay">Play</button>
+        <button id="btnPause">Pause</button>
+      </section>
+      <section>
+        <span>
+          <input type="checkbox" id="cbRectangles" checked>
+          <label for="cbRectangles">Rectangles</label>
+        </span>
+      </section>
+      <section>
+        <p>Click on the screen to "spraypaint" rectangles (you probably want the screensaver to be paused)</p>
+      </section>
+  </body>
 </html>
